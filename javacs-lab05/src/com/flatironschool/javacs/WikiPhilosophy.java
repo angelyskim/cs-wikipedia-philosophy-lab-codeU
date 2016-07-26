@@ -31,21 +31,33 @@ public class WikiPhilosophy {
 		
         // some example code to get you started
 
+        ArrayList<String> links = new ArrayList<String>();
+        Boolean found = false;
+
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Elements paragraphs = wf.fetchWikipedia(url);
 
-		Element firstPara = paragraphs.get(0);
+		for (int i = 0; i < paragraphs.size(); i++) {
+			Element paragraph = paragraphs.get(i);
+			Iterable<Node> iter = new WikiNodeIterable(paragraph);
 		
-		Iterable<Node> iter = new WikiNodeIterable(firstPara);
-		for (Node node: iter) {
-			if (node instanceof TextNode) {
-				System.out.print(node);
+			for (Node node : iter) {
+				if (node instanceof Element) {
+ 					String link = node.attr("href");
+
+ 					if(link.equals("/wiki/Philosophy")) {
+ 						found = true;
+ 					} else {
+ 						links.add("https://en.wikipedia.org" + link);
+ 					}
+ 				}
 			}
         }
 
-        // the following throws an exception so the test fails
-        // until you update the code
-        String msg = "Complete this lab by adding your code and removing this statement.";
-        throw new UnsupportedOperationException(msg);
+        if (found) {
+ 			System.out.println("Found Philosophy!");
+        } else {
+        	System.out.println("Could not find philosophy.");
+        }
 	}
 }
